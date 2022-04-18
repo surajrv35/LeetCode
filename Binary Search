@@ -1,0 +1,134 @@
+sorted array/linked list/matrix and to find certain element : Binary search or modified BS or two pointers
+
+https://leetcode.com/problems/binary-search/
+class Solution {
+    public int search(int[] nums, int target) {
+        // T=O(logn) S=O(1)
+        // sanity checks
+        if(nums == null || nums.length == 0) 
+            return -1;
+            
+        int low=0, high=nums.length-1, mid;
+        while(low<=high) { //think if its only one element in the array, low< high doesnt work
+            mid=low+(high-low)/2; //Integer overflow in java ex: high=Integer.MAX_VALUE, low is at 10 -> low+high will result in exception
+            if(nums[mid] == target)
+                return mid;
+            if(nums[mid] > target)
+                high=mid-1;
+            else //nums[mid] < target
+                low=mid+1; 
+        }
+        return -1;
+    }
+}
+
+1] https://leetcode.com/problems/search-in-rotated-sorted-array/ : take an example and workout 
+* check if its left sorted or right sorted
+* check where does the target lies and move your high, low pointers accordingly
+class Solution {
+    public int search(int[] nums, int target) {
+        //             space       time
+        // iterative    O(1)      O(logn 2)
+        // recursive  O(logn 2)   O(logn 2)
+        
+        // sanity check
+        if(nums == null ||  nums.length == 0)
+            return -1;
+        
+        // Iterative solution
+        int low=0, high=nums.length-1, mid;
+        while(low <= high) {
+            mid = low+(high-low)/2; //Integer overflow
+            
+            if(nums[mid] == target)
+                return mid;
+            
+            if(nums[low] <= nums[mid]) { //left sorted
+                if(nums[low] <= target && target <= nums[mid])
+                    high = mid - 1;
+                else
+                    low = mid + 1;
+            } else { //right sorted nums[mid] <= nums[high]
+                if(nums[mid] <= target && target <= nums[high])
+                    low = mid + 1;
+                else
+                    high = mid - 1;
+            }
+        }
+        return -1;
+        
+        // return helper(nums, target, 0, nums.length-1);
+    }
+    
+    // Recurion: stack, stack frame, function stack, contains local and return variables
+//     private int helper(int[] nums, int target, int low, int high) {
+//         //base condition
+//         if(low > high)
+//             return -1;
+        
+//         int mid = low+(high-low)/2; //Integer overflow
+        
+//         if(nums[mid] == target)
+//             return mid;
+        
+//         if(nums[low] <= nums[mid]) { //left sorted
+//             if(nums[low] <= target && target <= nums[mid])
+//                 high = mid - 1;
+//             else
+//                 low = mid + 1;
+//         } else { //right sorted nums[mid] <= nums[high]
+//             if(nums[mid] <= target && target <= nums[high])
+//                 low = mid + 1;
+//             else
+//                 high = mid - 1;
+//         }
+        
+//         return helper(nums, target, low, high);
+//     }
+}
+
+2] https://leetcode.com/problems/search-in-a-sorted-array-of-unknown-size/ : 
+* while arr[high] < target inc low and double hig
+* once you get the range bounded by low and high, do BS
+public class Test {
+    public static void main(String[] args) {
+        System.out.println("Index of target is");
+        int[] arr = {3,5,7,10,11,13,14,15,17,19};
+        int target = 11;
+        System.out.println(m_binary_search(arr, target));
+    }
+    private static int m_binary_search(int arr[], int target)
+    {
+        int low = 0, high = 1;
+        while(arr[high] < target)
+        {
+            low = low+1; // works with low = high + 1;
+            high = high*2;
+        }
+        while (low <= high)
+        {
+            int mid = low+(high-low)/2;
+            if (target == arr[mid])
+                return mid;
+            if (arr[mid] < target)
+                low = mid+1;
+            else
+                high = mid-1;
+        }
+        return -1;
+    }
+}
+
+3] https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/
+// BruteForce in O(n)
+int first=-1, last=-1;
+for(int i=0;i<nums.length;i++) {
+  if(target != nums[i])
+    continue;
+   if(first == -1)
+    first=i;
+   last=i;
+}
+
+
+return new int[] {first, last};
